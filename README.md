@@ -29,6 +29,19 @@ npm run dev                                # http://localhost:3000
 
 Open http://localhost:3000, drop an `.xlsx` / `.csv`, or click **Try with sample data**.
 
+## Deploy on Vercel
+
+One Vercel project serves both parts: Vite builds the frontend to `dist/`, and `api/index.py` runs the
+FastAPI app in `backend/` as a Python function (`vercel.json` routes `/api/*` to it).
+
+1. Import the repo in Vercel (framework: Vite — picked up from `vercel.json`).
+2. **Settings → Environment Variables**: add `MONGO_URI`, `MONGO_DB`, `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`
+   (same values as `backend/.env`), then redeploy.
+3. MongoDB Atlas → Network Access must allow `0.0.0.0/0` (Vercel IPs change). MongoDB is required on Vercel —
+   functions don't share memory, so the in-memory fallback can't hold uploads between requests.
+
+Vercel limits uploads to 4.5 MB per request; a full PAIMANA export is well under that.
+
 ## Expected columns (any order, any reasonable header wording)
 
 Project ID · Project name · Ministry · Sector · State · Implementing agency · Original cost · Revised cost ·
