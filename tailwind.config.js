@@ -1,36 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        mono: {
-          black: '#000000',
-          dark: '#09090B',
-          zinc: '#18181B',
-          borderDark: '#27272A',
-          muted: '#71717A',
-          borderLight: '#E4E4E7',
-          light: '#F4F4F5',
-          subtle: '#FAFAFA',
-          white: '#FFFFFF',
-        }
+        ink: { DEFAULT: '#0b0b0b', 2: '#52514e', 3: '#898781' },
+        line: '#e4e3dd',
+        plane: '#f6f6f3',
+        brand: { DEFAULT: '#2a78d6', dark: '#1c5cab', soft: '#e8f1fc' },
+        good: '#0ca30c',
+        warn: '#fab219',
+        serious: '#ec835a',
+        critical: '#d03b3b',
       },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
-      },
-      boxShadow: {
-        'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04)',
-        'elevated': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        'brutalist': '2px 2px 0px 0px #000000',
-        'brutalist-lg': '4px 4px 0px 0px #000000',
-      }
+      fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'] },
     },
   },
   plugins: [],
-}
+};
