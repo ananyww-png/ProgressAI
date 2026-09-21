@@ -121,7 +121,8 @@ def dataset(dataset_id: str):
     return _load(dataset_id)
 
 
-@app.post("/api/datasets/{dataset_id}/projects/{project_id}/recommend")
+# `:path` so IDs containing "/" (e.g. RB/2023/066) still match.
+@app.post("/api/datasets/{dataset_id}/projects/{project_id:path}/recommend")
 async def recommend(dataset_id: str, project_id: str, refresh: bool = False):
     doc = _load(dataset_id)
     cached = (doc.get("recommendations") or {}).get(_key(project_id))
