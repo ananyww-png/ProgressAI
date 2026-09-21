@@ -1,82 +1,36 @@
-import React, { useState } from 'react';
-import { AppProvider, useApp } from './context/AppContext';
-import { Sidebar } from './components/Sidebar';
-import { Topbar } from './components/Topbar';
-import { GlobalSearchModal } from './components/GlobalSearchModal';
+import React, { useEffect, useState } from 'react';
+import { LineChart, Upload } from 'lucide-react';
+import { api } from './api';
+import { Dashboard } from './Dashboard';
+import { UploadScreen } from './UploadScreen';
+import type { Dataset, Health } from './types';
 
-// Views
-import { DashboardView } from './views/DashboardView';
-import { TimeAgentView } from './views/TimeAgentView';
-import { ReportsView } from './views/ReportsView';
-import { InputIngestionView } from './views/InputIngestionView';
-import { ScheduleView } from './views/ScheduleView';
-import { ReviewQueueView } from './views/ReviewQueueView';
-import { AnalyticsView } from './views/AnalyticsView';
-import { ProjectMemoryView } from './views/ProjectMemoryView';
-import { AuditTrailView } from './views/AuditTrailView';
-import { SettingsView } from './views/SettingsView';
+export default function App() {
+  const [dataset, setDataset] = useState<Dataset | null>(null);
+  const [health, setHealth] = useState<Health | null>(null);
 
-const MainLayout: React.FC = () => {
-  const { activeTab } = useApp();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const renderActiveView = () => {
-    switch (activeTab) {
-      case 'Dashboard':
-        return <DashboardView />;
-      case 'Time Agent':
-        return <TimeAgentView />;
-      case 'Reports':
-        return <ReportsView />;
-      case 'Input Ingestion':
-        return <InputIngestionView />;
-      case 'Schedule':
-        return <ScheduleView />;
-      case 'Review Queue':
-        return <ReviewQueueView />;
-      case 'Analytics':
-        return <AnalyticsView />;
-      case 'Project Memory':
-        return <ProjectMemoryView />;
-      case 'Audit Trail':
-        return <AuditTrailView />;
-      case 'Settings':
-        return <SettingsView />;
-      default:
-        return <DashboardView />;
-    }
-  };
+  useEffect(() => {
+    api.health().then(setHealth).catch(() => setHealth(null));
+  }, []);
 
   return (
-    <div className="flex h-screen bg-zinc-50 font-sans antialiased overflow-hidden selection:bg-black selection:text-white">
-      {/* Fixed Left Sidebar */}
-      <Sidebar />
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar onOpenSearch={() => setIsSearchOpen(true)} />
-
-        {/* Scrollable View Container */}
-        <main className="flex-1 overflow-y-auto bg-zinc-100/40 relative">
-          {renderActiveView()}
-        </main>
-      </div>
-
-      {/* Global Search Modal (Ctrl+K) */}
-      <GlobalSearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-      />
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-30 border-b border-line bg-white/90 backdrop-blur">
+        <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:px-6">
+          <button onClick={() => setDataset(null)} className="flex items-center gap-2 font-semibold">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-brand text-white"><LineChart className="h-4 w-4" /></span>
+            ProgressAI
+          </button>
+          <span className="hidden text-sm text-ink-3 sm:inline">Infrastructure project early-warning system</span>
+          {dataset && (
+            <button onClick={() => setDataset(null)}
+              className="ml-auto inline-flex items-center gap-2 rounded-lg border border-line px-3 py-1.5 text-sm font-medium hover:border-brand hover:text-brand">
+              <Upload className="h-4 w-4" /> New upload
+            </button>
+          )}
+        </div>
+      </header>
+      {dataset ? <Dashboard key={dataset._id} dataset={dataset} /> : <UploadScreen onLoaded={setDataset} health={health} />}
     </div>
   );
-};
-
-export const App: React.FC = () => {
-  return (
-    <AppProvider>
-      <MainLayout />
-    </AppProvider>
-  );
-};
-
-export default App;
+}
